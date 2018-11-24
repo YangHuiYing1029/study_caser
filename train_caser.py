@@ -79,6 +79,7 @@ class Recommender(object):
         self._net = gpu(Caser(self._num_users,
                               self._num_items,
                               self.model_args), self._use_cuda)
+        print(self._net)
 
         self._optimizer = optim.Adam(
             self._net.parameters(),
@@ -227,9 +228,9 @@ class Recommender(object):
 
         for i, u in enumerate(users_):
             for j in range(n):
+                # print(i, u, j)
                 x = self._candidate[u]
-                negative_samples[i, j] = x[
-                    np.random.randint(len(x))]
+                negative_samples[i, j] = x[np.random.randint(len(x))]
 
         return negative_samples
 
@@ -294,19 +295,18 @@ if __name__ == '__main__':
     parser.add_argument('--neg_samples', type=int, default=3)
     parser.add_argument('--use_cuda', type=str2bool, default=True)
 
-    config = parser.parse_args()
 
+    # config = parser.parse_args()
     # model dependent arguments
-    model_parser = argparse.ArgumentParser()
-    model_parser.add_argument('--d', type=int, default=50)
-    model_parser.add_argument('--nv', type=int, default=4)
-    model_parser.add_argument('--nh', type=int, default=16)
-    model_parser.add_argument('--drop', type=float, default=0.5)
-    model_parser.add_argument('--ac_conv', type=str, default='relu')
-    model_parser.add_argument('--ac_fc', type=str, default='relu')
-
-    model_config = model_parser.parse_args()
-    model_config.L = config.L
+    parser.add_argument('--d', type=int, default=50)
+    parser.add_argument('--nv', type=int, default=4)
+    parser.add_argument('--nh', type=int, default=16)
+    parser.add_argument('--drop', type=float, default=0.5)
+    parser.add_argument('--ac_conv', type=str, default='relu')
+    parser.add_argument('--ac_fc', type=str, default='relu')
+    config = parser.parse_args()
+    # model_config = model_parser.parse_args()
+    # model_config.L = config.L
 
     # set seed
     set_seed(config.seed,

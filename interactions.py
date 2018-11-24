@@ -57,6 +57,11 @@ class Interactions(object):
         user_ids = np.array([user_map[u] for u in user_ids])
         item_ids = np.array([item_map[i] for i in item_ids])
 
+        print("READ INPUT FILE ",file_path,"...")
+        print("user_id ",min(user_ids),"~",max(user_ids)," [num: ",len(user_ids), " (unique: ", num_user,")]")
+        print("item_id ",min(item_ids),"~",max(item_ids)," [num: ",len(item_ids), " (unique: ", num_item,")]")
+
+
         self.num_users = num_user
         self.num_items = num_item
 
@@ -133,6 +138,10 @@ class Interactions(object):
         self.item_ids = self.item_ids + 1
         self.num_items += 1
 
+        print("SET ITEM PADDING...")
+        print("user_id ",min(self.user_ids),"~",max(self.user_ids)," [num: ",len(self.user_ids), " (unique: ", self.num_users,")]")
+        print("item_id ",min(self.item_ids),"~",max(self.item_ids)," [num: ",len(self.item_ids), " (unique: ", self.num_items,")]")
+
         max_sequence_length = sequence_length + target_length
 
         # Sort first by user id
@@ -144,8 +153,14 @@ class Interactions(object):
         user_ids, indices, counts = np.unique(user_ids,
                                               return_index=True,
                                               return_counts=True)
+        # print(indices.size)
+        # print(len(item_ids))
+        indices = np.append(indices, len(item_ids)) ### append하고 다시 넣어줘야함.
+        # print(indices.size)
+        # print("counts check", counts[len(counts)-1], len(item_ids[indices[len(counts)-1]:indices[len(counts)]]))
 
-        num_subsequences = sum([c - max_sequence_length + 1 if c >= max_sequence_length else 1 for c in counts])
+        # num_subsequences = sum([c - max_sequence_length + 1 if c >= max_sequence_length else 1 for c in counts])
+        num_subsequences = sum([c - max_sequence_length + 1 if c >= max_sequence_length else 0 for c in counts])
 
         sequences = np.zeros((num_subsequences, sequence_length),
                              dtype=np.int64)
@@ -158,21 +173,26 @@ class Interactions(object):
                                   dtype=np.int64)
         test_users = np.empty(self.num_users,
                               dtype=np.int64)
-
         _uid = None
         for i, (uid,
                 item_seq) in enumerate(_generate_sequences(user_ids,
                                                            item_ids,
                                                            indices,
                                                            max_sequence_length)):
+
             if uid != _uid:
+                _uid = uid
                 test_sequences[uid][:] = item_seq[-sequence_length:]
                 test_users[uid] = uid
-                _uid = uid
+
             sequences_targets[i][:] = item_seq[-target_length:]
             sequences[i][:] = item_seq[:sequence_length]
             sequence_users[i] = uid
-
+        # print("i", i)
+        # print("num_subsequences", num_subsequences)
+        # print("item이 충분한 유저 갯수", len(np.unique(sequence_users)))
+        # print("max uid", max(sequence_users))
+        # print(self.num_users)
         self.sequences = SequenceInteractions(sequence_users, sequences, sequences_targets)
         self.test_sequences = SequenceInteractions(test_users, test_sequences)
 
@@ -207,28 +227,32 @@ class SequenceInteractions(object):
 
 
 def _sliding_window(tensor, window_size, step_size=1):
-    if len(tensor) - window_size >= 0:
-        for i in range(len(tensor), 0, -step_size):
-            if i - window_size >= 0:
-                yield tensor[i - window_size:i]
-            else:
-                break
-    else:
-        yield tensor
+    # if len(tensor) - window_size >= 0:
+    for i in range(len(tensor), 0, -step_size):
+        if i - window_size >= 0:
+            yield tensor[i - window_size:i]
+        else:
+            break
+    # else:
+    #     yield None
+    #     # print("break!")
+    #     # yield tensor #### 여기서 그냥 반환하면 위에서 접근할 때 길이가 안맞아서 오류가 나지 않나?
 
 
 def _generate_sequences(user_ids, item_ids,
                         indices,
                         max_sequence_length):
-    for i in range(len(indices)):
-
+    # sum = 0
+    for i in range(len(indices)-1):
         start_idx = indices[i]
-
-        if i >= len(indices) - 1:
-            stop_idx = None
+        stop_idx = indices[i + 1]
+        items = item_ids[start_idx:stop_idx]
+        if len(items) < max_sequence_length:
+            continue
+            # print("not" , user_ids[i])
         else:
-            stop_idx = indices[i + 1]
-
-        for seq in _sliding_window(item_ids[start_idx:stop_idx],
-                                   max_sequence_length):
-            yield (user_ids[i], seq)
+            # sum += (len(items)-max_sequence_length+1)
+            # print(sum)
+            # print("yes" , user_ids[i])
+            for seq in _sliding_window(items,max_sequence_length):
+                yield (user_ids[i], seq)

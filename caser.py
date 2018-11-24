@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+import pdb
 from utils import activation_getter
 
 
@@ -41,6 +41,7 @@ class Caser(nn.Module):
 
         # vertical conv layer
         self.conv_v = nn.Conv2d(1, self.n_v, (L, 1))
+        # self.conv_v = nn.Conv2d(1, self.n_v, (dims, 1))
 
         # horizontal conv layer
         lengths = [i + 1 for i in range(L)]
@@ -89,7 +90,7 @@ class Caser(nn.Module):
         for_pred: boolean, optional
             Train or Prediction. Set to True when evaluation.
         """
-
+        # print("net", for_pred)
         if not use_cache:
             # Embedding Look-up
             item_embs = self.item_embeddings(seq_var).unsqueeze(1)  # use unsqueeze() to get 4-D
@@ -99,11 +100,14 @@ class Caser(nn.Module):
             out, out_h, out_v = None, None, None
             # vertical conv layer
             if self.n_v:
+                # print("n_v", self.n_v)
                 out_v = self.conv_v(item_embs).squeeze(2)
+                # pdb.set_trace()
                 out_v = out_v.view(-1, self.fc1_dim_v)  # prepare for fully connect
 
             # horizontal conv layer
             out_hs = list()
+            # pdb.set_trace()
             if self.n_h:
                 for conv in self.conv_h:
                     conv_out = self.ac_conv(conv(item_embs).squeeze(3))
@@ -111,10 +115,12 @@ class Caser(nn.Module):
                     out_hs.append(pool_out)
                 out_h = torch.cat(out_hs, 1)  # prepare for fully connect
 
+            # pdb.set_trace()
             # Fully-connected Layers
             out = torch.cat([out_v, out_h], 1)
             # apply dropout
             out = self.dropout(out)
+            # pdb.set_trace()
 
             # fully-connected layer
             z = self.ac_fc(self.fc1(out))
@@ -136,8 +142,11 @@ class Caser(nn.Module):
                 results.append(result)
             res = torch.stack(results, 1)
         else:
+            # pdb.set_trace()
             w2 = w2.squeeze()
             b2 = b2.squeeze()
             res = (x * w2).sum(1) + b2
+            # pdb.set_trace()
+
 
         return res
