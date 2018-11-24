@@ -40,7 +40,7 @@ class Interactions(object):
         # read users and items from file
         with open(file_path, 'r') as fin:
             for line in fin:
-                u, i, r = line.strip().split()
+                u, i, r = line.strip().split(',')
                 if int(r) >= 3:
                     user_ids.append(u)
                     item_ids.append(i)

@@ -284,10 +284,10 @@ if __name__ == '__main__':
     # data arguments
     parser.add_argument('--train_root', type=str, default='datasets/ml1m/test/train.txt')
     parser.add_argument('--test_root', type=str, default='datasets/ml1m/test/test.txt')
-    parser.add_argument('--L', type=int, default=5)
-    parser.add_argument('--T', type=int, default=3)
+    parser.add_argument('--L', type=int, default=10)
+    parser.add_argument('--T', type=int, default=5)
     # train arguments
-    parser.add_argument('--n_iter', type=int, default=50)
+    parser.add_argument('--n_iter', type=int, default=1)
     parser.add_argument('--seed', type=int, default=1234)
     parser.add_argument('--batch_size', type=int, default=512)
     parser.add_argument('--learning_rate', type=float, default=1e-3)
@@ -298,7 +298,7 @@ if __name__ == '__main__':
 
     # config = parser.parse_args()
     # model dependent arguments
-    parser.add_argument('--d', type=int, default=50)
+    parser.add_argument('--d', type=int, default=100)
     parser.add_argument('--nv', type=int, default=4)
     parser.add_argument('--nh', type=int, default=16)
     parser.add_argument('--drop', type=float, default=0.5)
