@@ -40,9 +40,10 @@ class Interactions(object):
         # read users and items from file
         with open(file_path, 'r') as fin:
             for line in fin:
-                u, i, _ = line.strip().split()
-                user_ids.append(u)
-                item_ids.append(i)
+                u, i, r = line.strip().split()
+                if int(r) >= 3:
+                    user_ids.append(u)
+                    item_ids.append(i)
 
         # update user and item mapping
         for u in user_ids:

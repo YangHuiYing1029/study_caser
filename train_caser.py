@@ -322,14 +322,14 @@ if __name__ == '__main__':
                         item_map=train.item_map)
 
     print(config)
-    print(model_config)
+    #print(model_config)
     # fit model
     model = Recommender(n_iter=config.n_iter,
                         batch_size=config.batch_size,
                         learning_rate=config.learning_rate,
                         l2=config.l2,
                         neg_samples=config.neg_samples,
-                        model_args=model_config,
+                        model_args=config,
                         use_cuda=config.use_cuda)
 
     model.fit(train, test, verbose=True)
