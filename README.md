@@ -63,3 +63,4 @@ If you use this Caser in your paper, please cite the paper:
 # Acknowledgment
 
 This project (utils.py, interactions.py, etc.) is heavily built on [Spotlight](https://github.com/maciejkula/spotlight). Thanks [Maciej Kula](https://github.com/maciejkula) for his great work.
+# study_caser
