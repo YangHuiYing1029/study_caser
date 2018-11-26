@@ -28,18 +28,23 @@ class Interactions(object):
         if not user_map and not item_map:
             user_map = dict()
             item_map = dict()
+            rate_map = dict()
 
             num_user = 0
             num_item = 0
+            num_rate = 0
             
             user_ids = list()
             item_ids = list()
+            rate_ids = list()
+            
             # read users and items from file
             with open(file_path, 'r') as fin:
                 for line in fin:
                     u, i, r = line.strip().split(',')
                     user_ids.append(u)
                     item_ids.append(i)
+                    rate_ids.append(r)
             #pdb.set_trace()
 
             # update user and item mapping
@@ -51,19 +56,23 @@ class Interactions(object):
                 if i not in item_map:
                     item_map[i] = num_item
                     num_item += 1
-
-            user_ids = np.array([user_map[u] for u in user_ids])
-            item_ids = np.array([item_map[i] for i in item_ids])
-            #pdb.set_trace()
+            for r in rate_ids:
+                if r not in rate_map:
+                    item_map[i] = num_item
+                    num_rate += 1  
+                  
 
         else:
             num_user = len(user_map)
             num_item = len(item_map)
+            num_rate = len(rate_map)
 
             user_ids = list()
             item_ids = list()
+            rate_ids = list()
             user_keys = user_map.keys()
             item_keys = item_map.keys()
+            rate_keys = rate_map.keys()
             
             # read users and items from file
             with open(file_path, 'r') as fin:
@@ -72,14 +81,17 @@ class Interactions(object):
                     if u in user_keys and i in item_keys:
                         user_ids.append(u)
                         item_ids.append(i)
+                        rate_ids.append(r)
 
-            user_ids = np.array([user_map[u] for u in user_ids])
-            item_ids = np.array([item_map[i] for i in item_ids])
-            #pdb.set_trace()
+
+        user_ids = np.array([user_map[u] for u in user_ids])
+        item_ids = np.array([item_map[i] for i in item_ids])
+        rate_ids = np.array([rate_map[r] for r in rate_ids])
 
         print("READ INPUT FILE ",file_path,"...")
         print("user_id ",min(user_ids),"~",max(user_ids)," [num: ",len(user_ids), " (unique: ", num_user,")]")
         print("item_id ",min(item_ids),"~",max(item_ids)," [num: ",len(item_ids), " (unique: ", num_item,")]")
+        print("rate_id ",min(rate_ids),"~",max(rate_ids)," [num: ",len(rate_ids), " (unique: ", num_rate,")]")
 
 
         self.num_users = num_user
