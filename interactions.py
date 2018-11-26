@@ -4,7 +4,7 @@ are returned by dataset-fetching and dataset-processing functions.
 """
 
 import numpy as np
-
+import pdb
 import scipy.sparse as sp
 
 
@@ -31,32 +31,51 @@ class Interactions(object):
 
             num_user = 0
             num_item = 0
+            
+            user_ids = list()
+            item_ids = list()
+            # read users and items from file
+            with open(file_path, 'r') as fin:
+                for line in fin:
+                    u, i, r = line.strip().split(',')
+                    user_ids.append(u)
+                    item_ids.append(i)
+            #pdb.set_trace()
+
+            # update user and item mapping
+            for u in user_ids:
+                if u not in user_map:
+                    user_map[u] = num_user
+                    num_user += 1
+            for i in item_ids:
+                if i not in item_map:
+                    item_map[i] = num_item
+                    num_item += 1
+
+            user_ids = np.array([user_map[u] for u in user_ids])
+            item_ids = np.array([item_map[i] for i in item_ids])
+            #pdb.set_trace()
+
         else:
             num_user = len(user_map)
             num_item = len(item_map)
 
-        user_ids = list()
-        item_ids = list()
-        # read users and items from file
-        with open(file_path, 'r') as fin:
-            for line in fin:
-                u, i, r = line.strip().split(',')
-                if int(r) >= 3:
-                    user_ids.append(u)
-                    item_ids.append(i)
+            user_ids = list()
+            item_ids = list()
+            user_keys = user_map.keys()
+            item_keys = item_map.keys()
+            
+            # read users and items from file
+            with open(file_path, 'r') as fin:
+                for line in fin:
+                    u, i, r = line.strip().split(',')
+                    if u in user_keys and i in item_keys:
+                        user_ids.append(u)
+                        item_ids.append(i)
 
-        # update user and item mapping
-        for u in user_ids:
-            if u not in user_map:
-                user_map[u] = num_user
-                num_user += 1
-        for i in item_ids:
-            if i not in item_map:
-                item_map[i] = num_item
-                num_item += 1
-
-        user_ids = np.array([user_map[u] for u in user_ids])
-        item_ids = np.array([item_map[i] for i in item_ids])
+            user_ids = np.array([user_map[u] for u in user_ids])
+            item_ids = np.array([item_map[i] for i in item_ids])
+            #pdb.set_trace()
 
         print("READ INPUT FILE ",file_path,"...")
         print("user_id ",min(user_ids),"~",max(user_ids)," [num: ",len(user_ids), " (unique: ", num_user,")]")
@@ -87,9 +106,10 @@ class Interactions(object):
         row = self.user_ids
         col = self.item_ids
         data = np.ones(len(self))
-
+        #print("shape", self.num_users+1, self.num_items+1)
+        #print(max(row), max(col))
         return sp.coo_matrix((data, (row, col)),
-                             shape=(self.num_users, self.num_items))
+                             shape=(self.num_users+1, self.num_items+1))
 
     def tocsr(self):
         """
@@ -137,7 +157,7 @@ class Interactions(object):
         for k, v in self.item_map.items():
             self.item_map[k] = v + 1
         self.item_ids = self.item_ids + 1
-        self.num_items += 1
+        self.num_items = self.num_items +1
 
         print("SET ITEM PADDING...")
         print("user_id ",min(self.user_ids),"~",max(self.user_ids)," [num: ",len(self.user_ids), " (unique: ", self.num_users,")]")
