@@ -1,0 +1,81 @@
+COMMAND LINE
+['--train_root', 'datasets/mlmil/train_over1.csv', '--test_root', 'datasets/mlmil/test_over1.csv', '--nv', '0', '--n_iter', '50']
+READ INPUT FILE  datasets/mlmil/train_over1.csv ...
+user_id  0 ~ 942  [num:  80000  (unique:  943 )]
+item_id  0 ~ 1649  [num:  80000  (unique:  1650 )]
+SET ITEM PADDING...
+user_id  0 ~ 942  [num:  80000  (unique:  943 )]
+item_id  1 ~ 1650  [num:  80000  (unique:  1651 )]
+READ INPUT FILE  datasets/mlmil/test_over1.csv ...
+user_id  0 ~ 942  [num:  19964  (unique:  943 )]
+item_id  1 ~ 1644  [num:  19964  (unique:  1650 )]
+Namespace(L=5, T=3, ac_conv='relu', ac_fc='relu', batch_size=512, d=50, drop=0.5, l2=1e-06, learning_rate=0.001, n_iter=50, neg_samples=3, nh=16, nv=0, seed=1234, test_root='datasets/mlmil/test_over1.csv', train_root='datasets/mlmil/train_over1.csv', use_cuda=True)
+total training instances: 73402
+Caser(
+  (user_embeddings): Embedding(943, 50)
+  (item_embeddings): Embedding(1651, 50)
+  (conv_h): ModuleList(
+    (0): Conv2d(1, 16, kernel_size=(1, 50), stride=(1, 1))
+    (1): Conv2d(1, 16, kernel_size=(2, 50), stride=(1, 1))
+    (2): Conv2d(1, 16, kernel_size=(3, 50), stride=(1, 1))
+    (3): Conv2d(1, 16, kernel_size=(4, 50), stride=(1, 1))
+    (4): Conv2d(1, 16, kernel_size=(5, 50), stride=(1, 1))
+  )
+  (fc1): Linear(in_features=80, out_features=50, bias=True)
+  (W2): Embedding(1651, 100)
+  (b2): Embedding(1651, 1)
+  (dropout): Dropout(p=0.5)
+)
+Epoch 1 [8.9 s]	loss=1.0894, map=0.1302, prec@1=0.2923, prec@5=0.2011, prec@10=0.1749, recall@1=0.0183, recall@5=0.0589, recall@10=0.1011, [4.1 s]
+Epoch 2 [8.7 s]	loss=0.9249, map=0.1762, prec@1=0.3657, prec@5=0.2731, prec@10=0.2306, recall@1=0.0242, recall@5=0.0930, recall@10=0.1439, [4.2 s]
+Epoch 3 [8.7 s]	loss=0.8341, map=0.2090, prec@1=0.3905, prec@5=0.3046, prec@10=0.2545, recall@1=0.0316, recall@5=0.1090, recall@10=0.1659, [4.0 s]
+Epoch 4 [8.7 s]	loss=0.7782, map=0.2211, prec@1=0.4078, prec@5=0.3163, prec@10=0.2669, recall@1=0.0324, recall@5=0.1143, recall@10=0.1785, [4.1 s]
+Epoch 5 [8.7 s]	loss=0.7386, map=0.2298, prec@1=0.4142, prec@5=0.3184, prec@10=0.2782, recall@1=0.0349, recall@5=0.1169, recall@10=0.1886, [4.1 s]
+Epoch 6 [8.6 s]	loss=0.7062, map=0.2352, prec@1=0.4142, prec@5=0.3323, prec@10=0.2855, recall@1=0.0359, recall@5=0.1243, recall@10=0.1959, [4.1 s]
+Epoch 7 [8.7 s]	loss=0.6775, map=0.2424, prec@1=0.4380, prec@5=0.3389, prec@10=0.2900, recall@1=0.0368, recall@5=0.1273, recall@10=0.2014, [4.1 s]
+Epoch 8 [8.7 s]	loss=0.6516, map=0.2436, prec@1=0.4110, prec@5=0.3411, prec@10=0.2943, recall@1=0.0355, recall@5=0.1290, recall@10=0.2064, [4.1 s]
+Epoch 9 [8.8 s]	loss=0.6273, map=0.2462, prec@1=0.4196, prec@5=0.3433, prec@10=0.2971, recall@1=0.0355, recall@5=0.1341, recall@10=0.2079, [4.1 s]
+Epoch 10 [8.7 s]	loss=0.6049, map=0.2502, prec@1=0.4315, prec@5=0.3504, prec@10=0.2994, recall@1=0.0371, recall@5=0.1293, recall@10=0.2083, [4.2 s]
+Epoch 11 [8.7 s]	loss=0.5820, map=0.2530, prec@1=0.4423, prec@5=0.3493, prec@10=0.3032, recall@1=0.0371, recall@5=0.1327, recall@10=0.2122, [4.1 s]
+Epoch 12 [8.7 s]	loss=0.5615, map=0.2490, prec@1=0.4304, prec@5=0.3454, prec@10=0.3018, recall@1=0.0345, recall@5=0.1294, recall@10=0.2097, [4.1 s]
+Epoch 13 [8.8 s]	loss=0.5407, map=0.2521, prec@1=0.4358, prec@5=0.3487, prec@10=0.2994, recall@1=0.0378, recall@5=0.1318, recall@10=0.2100, [4.2 s]
+Epoch 14 [8.8 s]	loss=0.5226, map=0.2562, prec@1=0.4304, prec@5=0.3532, prec@10=0.3023, recall@1=0.0407, recall@5=0.1363, recall@10=0.2124, [4.1 s]
+Epoch 15 [8.7 s]	loss=0.5050, map=0.2539, prec@1=0.4315, prec@5=0.3487, prec@10=0.3011, recall@1=0.0381, recall@5=0.1333, recall@10=0.2170, [4.1 s]
+Epoch 16 [8.7 s]	loss=0.4869, map=0.2544, prec@1=0.4358, prec@5=0.3487, prec@10=0.3024, recall@1=0.0406, recall@5=0.1317, recall@10=0.2141, [4.1 s]
+Epoch 17 [8.8 s]	loss=0.4717, map=0.2538, prec@1=0.4239, prec@5=0.3508, prec@10=0.3004, recall@1=0.0390, recall@5=0.1340, recall@10=0.2120, [4.1 s]
+Epoch 18 [8.7 s]	loss=0.4559, map=0.2538, prec@1=0.4401, prec@5=0.3450, prec@10=0.2973, recall@1=0.0403, recall@5=0.1322, recall@10=0.2157, [4.1 s]
+Epoch 19 [9.0 s]	loss=0.4423, map=0.2515, prec@1=0.4250, prec@5=0.3446, prec@10=0.2951, recall@1=0.0384, recall@5=0.1290, recall@10=0.2149, [4.2 s]
+Epoch 20 [8.7 s]	loss=0.4292, map=0.2515, prec@1=0.4283, prec@5=0.3420, prec@10=0.2971, recall@1=0.0384, recall@5=0.1301, recall@10=0.2124, [4.1 s]
+Epoch 21 [8.8 s]	loss=0.4174, map=0.2489, prec@1=0.4218, prec@5=0.3389, prec@10=0.2953, recall@1=0.0373, recall@5=0.1307, recall@10=0.2122, [4.1 s]
+Epoch 22 [8.7 s]	loss=0.4042, map=0.2497, prec@1=0.4283, prec@5=0.3385, prec@10=0.2957, recall@1=0.0388, recall@5=0.1309, recall@10=0.2090, [4.1 s]
+Epoch 23 [8.7 s]	loss=0.3932, map=0.2489, prec@1=0.4186, prec@5=0.3387, prec@10=0.2923, recall@1=0.0378, recall@5=0.1325, recall@10=0.2054, [4.1 s]
+Epoch 24 [8.7 s]	loss=0.3829, map=0.2474, prec@1=0.4153, prec@5=0.3389, prec@10=0.2949, recall@1=0.0366, recall@5=0.1309, recall@10=0.2109, [4.1 s]
+Epoch 25 [8.8 s]	loss=0.3738, map=0.2486, prec@1=0.4239, prec@5=0.3392, prec@10=0.2919, recall@1=0.0389, recall@5=0.1313, recall@10=0.2110, [4.1 s]
+Epoch 26 [8.7 s]	loss=0.3653, map=0.2462, prec@1=0.4067, prec@5=0.3299, prec@10=0.2887, recall@1=0.0385, recall@5=0.1305, recall@10=0.2109, [4.1 s]
+Epoch 27 [8.7 s]	loss=0.3540, map=0.2467, prec@1=0.4218, prec@5=0.3333, prec@10=0.2873, recall@1=0.0387, recall@5=0.1311, recall@10=0.2085, [4.1 s]
+Epoch 28 [8.6 s]	loss=0.3473, map=0.2449, prec@1=0.4110, prec@5=0.3318, prec@10=0.2883, recall@1=0.0375, recall@5=0.1341, recall@10=0.2102, [4.1 s]
+Epoch 29 [8.8 s]	loss=0.3392, map=0.2429, prec@1=0.4164, prec@5=0.3301, prec@10=0.2877, recall@1=0.0373, recall@5=0.1294, recall@10=0.2123, [4.2 s]
+Epoch 30 [8.7 s]	loss=0.3314, map=0.2409, prec@1=0.4035, prec@5=0.3301, prec@10=0.2836, recall@1=0.0353, recall@5=0.1298, recall@10=0.2064, [4.1 s]
+Epoch 31 [8.7 s]	loss=0.3246, map=0.2424, prec@1=0.4078, prec@5=0.3264, prec@10=0.2833, recall@1=0.0388, recall@5=0.1290, recall@10=0.2097, [4.1 s]
+Epoch 32 [8.6 s]	loss=0.3181, map=0.2408, prec@1=0.4013, prec@5=0.3264, prec@10=0.2824, recall@1=0.0379, recall@5=0.1283, recall@10=0.2084, [4.1 s]
+Epoch 33 [8.8 s]	loss=0.3109, map=0.2388, prec@1=0.3970, prec@5=0.3236, prec@10=0.2818, recall@1=0.0343, recall@5=0.1269, recall@10=0.2078, [4.1 s]
+Epoch 34 [8.7 s]	loss=0.3046, map=0.2407, prec@1=0.4099, prec@5=0.3262, prec@10=0.2813, recall@1=0.0387, recall@5=0.1312, recall@10=0.2099, [4.2 s]
+Epoch 35 [8.7 s]	loss=0.2993, map=0.2389, prec@1=0.4067, prec@5=0.3219, prec@10=0.2781, recall@1=0.0375, recall@5=0.1288, recall@10=0.2059, [4.2 s]
+Epoch 36 [8.7 s]	loss=0.2953, map=0.2348, prec@1=0.3981, prec@5=0.3191, prec@10=0.2780, recall@1=0.0338, recall@5=0.1262, recall@10=0.2074, [4.1 s]
+Epoch 37 [8.8 s]	loss=0.2896, map=0.2373, prec@1=0.4056, prec@5=0.3243, prec@10=0.2771, recall@1=0.0372, recall@5=0.1272, recall@10=0.2053, [4.2 s]
+Epoch 38 [8.7 s]	loss=0.2845, map=0.2361, prec@1=0.4078, prec@5=0.3243, prec@10=0.2742, recall@1=0.0349, recall@5=0.1294, recall@10=0.2059, [4.1 s]
+Epoch 39 [8.8 s]	loss=0.2797, map=0.2356, prec@1=0.3981, prec@5=0.3200, prec@10=0.2758, recall@1=0.0348, recall@5=0.1270, recall@10=0.2041, [4.1 s]
+Epoch 40 [8.8 s]	loss=0.2763, map=0.2325, prec@1=0.3851, prec@5=0.3182, prec@10=0.2730, recall@1=0.0330, recall@5=0.1276, recall@10=0.2032, [4.1 s]
+Epoch 41 [8.8 s]	loss=0.2707, map=0.2330, prec@1=0.4013, prec@5=0.3206, prec@10=0.2718, recall@1=0.0354, recall@5=0.1266, recall@10=0.2013, [4.1 s]
+Epoch 42 [8.8 s]	loss=0.2666, map=0.2322, prec@1=0.3981, prec@5=0.3204, prec@10=0.2715, recall@1=0.0347, recall@5=0.1293, recall@10=0.2025, [4.1 s]
+Epoch 43 [8.7 s]	loss=0.2635, map=0.2302, prec@1=0.3873, prec@5=0.3176, prec@10=0.2721, recall@1=0.0323, recall@5=0.1275, recall@10=0.2031, [4.2 s]
+Epoch 44 [8.7 s]	loss=0.2581, map=0.2308, prec@1=0.3970, prec@5=0.3191, prec@10=0.2691, recall@1=0.0345, recall@5=0.1277, recall@10=0.2008, [4.1 s]
+Epoch 45 [8.8 s]	loss=0.2554, map=0.2305, prec@1=0.4013, prec@5=0.3126, prec@10=0.2687, recall@1=0.0354, recall@5=0.1268, recall@10=0.1985, [4.1 s]
+Epoch 46 [8.6 s]	loss=0.2514, map=0.2279, prec@1=0.3808, prec@5=0.3094, prec@10=0.2681, recall@1=0.0321, recall@5=0.1240, recall@10=0.2019, [4.1 s]
+Epoch 47 [8.7 s]	loss=0.2486, map=0.2266, prec@1=0.3819, prec@5=0.3098, prec@10=0.2643, recall@1=0.0326, recall@5=0.1217, recall@10=0.1973, [4.1 s]
+Epoch 48 [8.7 s]	loss=0.2452, map=0.2259, prec@1=0.3797, prec@5=0.3113, prec@10=0.2665, recall@1=0.0325, recall@5=0.1247, recall@10=0.2004, [4.1 s]
+Epoch 49 [8.8 s]	loss=0.2428, map=0.2257, prec@1=0.3830, prec@5=0.3115, prec@10=0.2646, recall@1=0.0323, recall@5=0.1259, recall@10=0.1980, [4.1 s]
+Epoch 50 [8.7 s]	loss=0.2405, map=0.2239, prec@1=0.3700, prec@5=0.3081, prec@10=0.2612, recall@1=0.0311, recall@5=0.1236, recall@10=0.1933, [4.1 s]
+--------------end--------------
+
+

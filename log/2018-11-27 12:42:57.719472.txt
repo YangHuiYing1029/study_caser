@@ -1,0 +1,41 @@
+COMMAND LINE
+['--nv', '0', '--n_iter', '10']
+READ INPUT FILE  datasets/ml1m/test/train.txt ...
+user_id  0 ~ 6039  [num:  802085  (unique:  6040 )]
+item_id  0 ~ 3414  [num:  802085  (unique:  3415 )]
+SET ITEM PADDING...
+user_id  0 ~ 6039  [num:  802085  (unique:  6040 )]
+item_id  1 ~ 3415  [num:  802085  (unique:  3416 )]
+READ INPUT FILE  datasets/ml1m/test/test.txt ...
+user_id  0 ~ 6039  [num:  197521  (unique:  6040 )]
+item_id  1 ~ 3415  [num:  197521  (unique:  3415 )]
+Namespace(L=5, T=3, ac_conv='relu', ac_fc='relu', batch_size=512, d=50, drop=0.5, l2=1e-06, learning_rate=0.001, n_iter=10, neg_samples=3, nh=16, nv=0, seed=1234, test_root='datasets/ml1m/test/test.txt', train_root='datasets/ml1m/test/train.txt', use_cuda=True)
+total training instances: 759805
+Caser(
+  (user_embeddings): Embedding(6040, 50)
+  (item_embeddings): Embedding(3416, 50)
+  (conv_h): ModuleList(
+    (0): Conv2d(1, 16, kernel_size=(1, 50), stride=(1, 1))
+    (1): Conv2d(1, 16, kernel_size=(2, 50), stride=(1, 1))
+    (2): Conv2d(1, 16, kernel_size=(3, 50), stride=(1, 1))
+    (3): Conv2d(1, 16, kernel_size=(4, 50), stride=(1, 1))
+    (4): Conv2d(1, 16, kernel_size=(5, 50), stride=(1, 1))
+  )
+  (fc1): Linear(in_features=80, out_features=50, bias=True)
+  (W2): Embedding(3416, 100)
+  (b2): Embedding(3416, 1)
+  (dropout): Dropout(p=0.5)
+)
+Epoch 1 [93.0 s]	loss=0.8209, map=0.0977, prec@1=0.1823, prec@5=0.1490, prec@10=0.1360, recall@1=0.0086, recall@5=0.0341, recall@10=0.0615, [44.0 s]
+Epoch 2 [90.1 s]	loss=0.6240, map=0.1140, prec@1=0.2028, prec@5=0.1715, prec@10=0.1548, recall@1=0.0105, recall@5=0.0429, recall@10=0.0753, [44.3 s]
+Epoch 3 [90.3 s]	loss=0.5536, map=0.1269, prec@1=0.2200, prec@5=0.1882, prec@10=0.1726, recall@1=0.0118, recall@5=0.0494, recall@10=0.0900, [44.7 s]
+Epoch 4 [91.0 s]	loss=0.5023, map=0.1363, prec@1=0.2305, prec@5=0.2012, prec@10=0.1834, recall@1=0.0129, recall@5=0.0551, recall@10=0.0982, [44.4 s]
+Epoch 5 [90.1 s]	loss=0.4646, map=0.1419, prec@1=0.2389, prec@5=0.2095, prec@10=0.1905, recall@1=0.0134, recall@5=0.0579, recall@10=0.1033, [44.1 s]
+Epoch 6 [89.9 s]	loss=0.4324, map=0.1468, prec@1=0.2505, prec@5=0.2152, prec@10=0.1955, recall@1=0.0144, recall@5=0.0605, recall@10=0.1069, [43.9 s]
+Epoch 7 [90.4 s]	loss=0.4065, map=0.1504, prec@1=0.2561, prec@5=0.2206, prec@10=0.1998, recall@1=0.0151, recall@5=0.0627, recall@10=0.1104, [44.1 s]
+Epoch 8 [89.9 s]	loss=0.3855, map=0.1534, prec@1=0.2611, prec@5=0.2252, prec@10=0.2024, recall@1=0.0156, recall@5=0.0654, recall@10=0.1129, [43.7 s]
+Epoch 9 [89.8 s]	loss=0.3675, map=0.1534, prec@1=0.2571, prec@5=0.2213, prec@10=0.2028, recall@1=0.0154, recall@5=0.0638, recall@10=0.1136, [44.0 s]
+Epoch 10 [90.1 s]	loss=0.3527, map=0.1541, prec@1=0.2485, prec@5=0.2235, prec@10=0.2034, recall@1=0.0147, recall@5=0.0650, recall@10=0.1143, [43.9 s]
+--------------end--------------
+
+

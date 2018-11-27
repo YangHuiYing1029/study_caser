@@ -1,0 +1,57 @@
+COMMAND LINE
+['--nh', '0', '--n_iter', '30']
+READ INPUT FILE  datasets/ml1m/test/train.txt ...
+user_id  0 ~ 6039  [num:  802085  (unique:  6040 )]
+item_id  0 ~ 3414  [num:  802085  (unique:  3415 )]
+SET ITEM PADDING...
+user_id  0 ~ 6039  [num:  802085  (unique:  6040 )]
+item_id  1 ~ 3415  [num:  802085  (unique:  3416 )]
+READ INPUT FILE  datasets/ml1m/test/test.txt ...
+user_id  0 ~ 6039  [num:  197521  (unique:  6040 )]
+item_id  1 ~ 3415  [num:  197521  (unique:  3415 )]
+Namespace(L=5, T=3, ac_conv='relu', ac_fc='relu', batch_size=512, d=50, drop=0.5, l2=1e-06, learning_rate=0.001, n_iter=30, neg_samples=3, nh=0, nv=4, seed=1234, test_root='datasets/ml1m/test/test.txt', train_root='datasets/ml1m/test/train.txt', use_cuda=True)
+total training instances: 759805
+Caser(
+  (user_embeddings): Embedding(6040, 50)
+  (item_embeddings): Embedding(3416, 50)
+  (conv_v): Conv2d(1, 4, kernel_size=(5, 1), stride=(1, 1))
+  (fc1): Linear(in_features=200, out_features=50, bias=True)
+  (W2): Embedding(3416, 100)
+  (b2): Embedding(3416, 1)
+  (dropout): Dropout(p=0.5)
+)
+
+Epoch 1 [39.2 s]	loss=0.8124, map=0.0995, prec@1=0.1765, prec@5=0.1521, prec@10=0.1400, recall@1=0.0086, recall@5=0.0348, recall@10=0.0641, [39.1 s]
+Epoch 2 [36.9 s]	loss=0.5885, map=0.1257, prec@1=0.2119, prec@5=0.1894, prec@10=0.1730, recall@1=0.0111, recall@5=0.0475, recall@10=0.0863, [39.1 s]
+Epoch 3 [36.7 s]	loss=0.4997, map=0.1471, prec@1=0.2674, prec@5=0.2238, prec@10=0.1991, recall@1=0.0150, recall@5=0.0608, recall@10=0.1050, [39.0 s]
+Epoch 4 [36.6 s]	loss=0.4438, map=0.1580, prec@1=0.2820, prec@5=0.2351, prec@10=0.2122, recall@1=0.0164, recall@5=0.0659, recall@10=0.1158, [39.0 s]
+Epoch 5 [36.8 s]	loss=0.4060, map=0.1652, prec@1=0.2866, prec@5=0.2473, prec@10=0.2201, recall@1=0.0166, recall@5=0.0719, recall@10=0.1243, [38.8 s]
+Epoch 6 [36.9 s]	loss=0.3773, map=0.1710, prec@1=0.2995, prec@5=0.2542, prec@10=0.2256, recall@1=0.0179, recall@5=0.0750, recall@10=0.1287, [39.0 s]
+Epoch 7 [36.8 s]	loss=0.3555, map=0.1719, prec@1=0.2911, prec@5=0.2567, prec@10=0.2265, recall@1=0.0175, recall@5=0.0759, recall@10=0.1306, [38.8 s]
+Epoch 8 [36.8 s]	loss=0.3373, map=0.1739, prec@1=0.2970, prec@5=0.2577, prec@10=0.2289, recall@1=0.0179, recall@5=0.0758, recall@10=0.1328, [38.4 s]
+Epoch 9 [36.7 s]	loss=0.3221, map=0.1744, prec@1=0.2916, prec@5=0.2569, prec@10=0.2289, recall@1=0.0179, recall@5=0.0771, recall@10=0.1330, [38.8 s]
+Epoch 10 [36.9 s]	loss=0.3094, map=0.1741, prec@1=0.2993, prec@5=0.2563, prec@10=0.2285, recall@1=0.0180, recall@5=0.0755, recall@10=0.1328, [38.9 s]
+Epoch 11 [36.5 s]	loss=0.2978, map=0.1747, prec@1=0.2967, prec@5=0.2566, prec@10=0.2287, recall@1=0.0185, recall@5=0.0773, recall@10=0.1342, [39.0 s]
+Epoch 12 [36.8 s]	loss=0.2892, map=0.1748, prec@1=0.2954, prec@5=0.2552, prec@10=0.2285, recall@1=0.0181, recall@5=0.0772, recall@10=0.1345, [39.0 s]
+Epoch 13 [36.6 s]	loss=0.2815, map=0.1741, prec@1=0.2983, prec@5=0.2528, prec@10=0.2283, recall@1=0.0179, recall@5=0.0765, recall@10=0.1353, [38.7 s]
+Epoch 14 [37.0 s]	loss=0.2752, map=0.1754, prec@1=0.2921, prec@5=0.2553, prec@10=0.2280, recall@1=0.0181, recall@5=0.0778, recall@10=0.1345, [39.2 s]
+Epoch 15 [36.7 s]	loss=0.2698, map=0.1746, prec@1=0.2937, prec@5=0.2546, prec@10=0.2276, recall@1=0.0180, recall@5=0.0779, recall@10=0.1357, [39.3 s]
+Epoch 16 [37.0 s]	loss=0.2652, map=0.1745, prec@1=0.3005, prec@5=0.2558, prec@10=0.2279, recall@1=0.0183, recall@5=0.0779, recall@10=0.1354, [39.1 s]
+Epoch 17 [37.0 s]	loss=0.2611, map=0.1742, prec@1=0.2942, prec@5=0.2562, prec@10=0.2263, recall@1=0.0177, recall@5=0.0785, recall@10=0.1345, [39.1 s]
+Epoch 18 [37.3 s]	loss=0.2574, map=0.1753, prec@1=0.2992, prec@5=0.2551, prec@10=0.2289, recall@1=0.0190, recall@5=0.0781, recall@10=0.1360, [39.1 s]
+Epoch 19 [37.0 s]	loss=0.2545, map=0.1736, prec@1=0.2914, prec@5=0.2525, prec@10=0.2260, recall@1=0.0179, recall@5=0.0772, recall@10=0.1345, [39.1 s]
+Epoch 20 [37.0 s]	loss=0.2515, map=0.1734, prec@1=0.2858, prec@5=0.2525, prec@10=0.2264, recall@1=0.0173, recall@5=0.0773, recall@10=0.1352, [38.8 s]
+Epoch 21 [37.0 s]	loss=0.2494, map=0.1746, prec@1=0.2907, prec@5=0.2544, prec@10=0.2278, recall@1=0.0177, recall@5=0.0784, recall@10=0.1359, [39.0 s]
+Epoch 22 [37.1 s]	loss=0.2473, map=0.1739, prec@1=0.2907, prec@5=0.2517, prec@10=0.2258, recall@1=0.0182, recall@5=0.0775, recall@10=0.1349, [39.1 s]
+Epoch 23 [36.6 s]	loss=0.2448, map=0.1734, prec@1=0.2932, prec@5=0.2530, prec@10=0.2261, recall@1=0.0180, recall@5=0.0778, recall@10=0.1353, [38.8 s]
+Epoch 24 [37.1 s]	loss=0.2429, map=0.1735, prec@1=0.2919, prec@5=0.2529, prec@10=0.2260, recall@1=0.0178, recall@5=0.0781, recall@10=0.1345, [39.0 s]
+Epoch 25 [37.0 s]	loss=0.2416, map=0.1741, prec@1=0.2904, prec@5=0.2540, prec@10=0.2270, recall@1=0.0178, recall@5=0.0784, recall@10=0.1358, [39.0 s]
+Epoch 26 [36.3 s]	loss=0.2406, map=0.1737, prec@1=0.2869, prec@5=0.2538, prec@10=0.2256, recall@1=0.0176, recall@5=0.0780, recall@10=0.1347, [38.8 s]
+Epoch 27 [36.7 s]	loss=0.2389, map=0.1743, prec@1=0.2925, prec@5=0.2532, prec@10=0.2267, recall@1=0.0184, recall@5=0.0784, recall@10=0.1363, [38.9 s]
+Epoch 28 [36.5 s]	loss=0.2375, map=0.1741, prec@1=0.2881, prec@5=0.2538, prec@10=0.2275, recall@1=0.0179, recall@5=0.0780, recall@10=0.1355, [39.1 s]
+Epoch 29 [36.9 s]	loss=0.2365, map=0.1744, prec@1=0.2843, prec@5=0.2526, prec@10=0.2257, recall@1=0.0181, recall@5=0.0779, recall@10=0.1346, [38.7 s]
+Epoch 30 [36.6 s]	loss=0.2357, map=0.1735, prec@1=0.2856, prec@5=0.2526, prec@10=0.2248, recall@1=0.0178, recall@5=0.0780, recall@10=0.1341, [38.8 s]
+
+--------------end--------------
+
+

@@ -40,12 +40,14 @@ class Caser(nn.Module):
         self.item_embeddings = nn.Embedding(num_items, dims)
 
         # vertical conv layer
-        self.conv_v = nn.Conv2d(1, self.n_v, (L, 1))
+        if self.n_v != 0:
+            self.conv_v = nn.Conv2d(1, self.n_v, (L, 1))
         # self.conv_v = nn.Conv2d(1, self.n_v, (dims, 1))
 
         # horizontal conv layer
         lengths = [i + 1 for i in range(L)]
-        self.conv_h = nn.ModuleList([nn.Conv2d(1, self.n_h, (i, dims)) for i in lengths])
+        if self.n_h !=0:
+            self.conv_h = nn.ModuleList([nn.Conv2d(1, self.n_h, (i, dims)) for i in lengths])
 
         # fully-connected layer
         self.fc1_dim_v = self.n_v * dims
@@ -99,7 +101,7 @@ class Caser(nn.Module):
             # Convolutional Layers
             out, out_h, out_v = None, None, None
             # vertical conv layer
-            if self.n_v:
+            if self.n_v !=0:
                 # print("n_v", self.n_v)
                 out_v = self.conv_v(item_embs).squeeze(2)
                 # pdb.set_trace()
@@ -108,7 +110,7 @@ class Caser(nn.Module):
             # horizontal conv layer
             out_hs = list()
             # pdb.set_trace()
-            if self.n_h:
+            if self.n_h!=0:
                 for conv in self.conv_h:
                     conv_out = self.ac_conv(conv(item_embs).squeeze(3))
                     pool_out = F.max_pool1d(conv_out, conv_out.size(2)).squeeze(2)
@@ -117,7 +119,13 @@ class Caser(nn.Module):
 
             # pdb.set_trace()
             # Fully-connected Layers
-            out = torch.cat([out_v, out_h], 1)
+            if self.n_v ==0:
+                out = out_h
+            elif self.n_h ==0:
+                out = out_v
+            else:
+                out = torch.cat([out_v, out_h], 1)
+                
             # apply dropout
             out = self.dropout(out)
             # pdb.set_trace()

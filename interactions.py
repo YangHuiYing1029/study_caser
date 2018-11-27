@@ -37,7 +37,10 @@ class Interactions(object):
             # read users and items from file
             with open(file_path, 'r') as fin:
                 for line in fin:
-                    u, i, r = line.strip().split(',')
+                    if "," in line:
+                        u, i, r = line.strip().split(',') 
+                    else:
+                        u, i, r = line.strip().split()
                     user_ids.append(u)
                     item_ids.append(i)
             #pdb.set_trace()
@@ -68,7 +71,10 @@ class Interactions(object):
             # read users and items from file
             with open(file_path, 'r') as fin:
                 for line in fin:
-                    u, i, r = line.strip().split(',')
+                    if "," in line:
+                        u, i, r = line.strip().split(',') 
+                    else:
+                        u, i, r = line.strip().split()
                     if u in user_keys and i in item_keys:
                         user_ids.append(u)
                         item_ids.append(i)

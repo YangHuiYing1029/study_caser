@@ -1,6 +1,7 @@
 import argparse
 from time import time
 import sys
+import datetime
 
 import torch.optim as optim
 from torch.autograd import Variable
@@ -194,13 +195,14 @@ class Recommender(object):
                                                                                          np.mean(recall[1]),
                                                                                          np.mean(recall[2]),
                                                                                          time() - t2)
-                print(output_str)
+                
             else:
                 output_str = "Epoch %d [%.1f s]\tloss=%.4f [%.1f s]" % (epoch_num + 1,
                                                                         t2 - t1,
                                                                         epoch_loss,
                                                                         time() - t2)
-                print(output_str)
+            print(output_str)
+            print(output_str, file= orig_stdout)
 
     def _generate_negative_samples(self, users, interactions, n):
         """
@@ -283,9 +285,12 @@ class Recommender(object):
 if __name__ == '__main__':
     # write at file
     orig_stdout = sys.stdout
-    f = open('log/out.txt', 'w')
+    filename = "log/"+str(datetime.datetime.now())+".txt"
+    f = open(filename, 'w')
     sys.stdout = f
     
+    print("COMMAND LINE")
+    print(sys.argv[1:])
     parser = argparse.ArgumentParser()
     # data arguments
     parser.add_argument('--train_root', type=str, default='datasets/ml1m/test/train.txt')
@@ -304,7 +309,7 @@ if __name__ == '__main__':
 
     # config = parser.parse_args()
     # model dependent arguments
-    parser.add_argument('--d', type=int, default=100)
+    parser.add_argument('--d', type=int, default=50)
     parser.add_argument('--nv', type=int, default=4)
     parser.add_argument('--nh', type=int, default=16)
     parser.add_argument('--drop', type=float, default=0.5)
@@ -328,6 +333,7 @@ if __name__ == '__main__':
                         item_map=train.item_map)
 
     print(config)
+    print(config, file=orig_stdout)
     #print(model_config)
     # fit model
     model = Recommender(n_iter=config.n_iter,
