@@ -1,5 +1,6 @@
 import argparse
 from time import time
+import sys
 
 import torch.optim as optim
 from torch.autograd import Variable
@@ -280,6 +281,11 @@ class Recommender(object):
 
 
 if __name__ == '__main__':
+    # write at file
+    orig_stdout = sys.stdout
+    f = open('log/out.txt', 'w')
+    sys.stdout = f
+    
     parser = argparse.ArgumentParser()
     # data arguments
     parser.add_argument('--train_root', type=str, default='datasets/ml1m/test/train.txt')
@@ -333,3 +339,7 @@ if __name__ == '__main__':
                         use_cuda=config.use_cuda)
 
     model.fit(train, test, verbose=True)
+    
+    print('--------------end--------------\n\n')
+    sys.stdout = orig_stdout
+    f.close()
