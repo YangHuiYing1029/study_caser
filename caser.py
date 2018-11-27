@@ -22,7 +22,7 @@ class Caser(nn.Module):
         Model-related arguments, like latent dimensions.
     """
 
-    def __init__(self, num_users, num_items, model_args):
+    def __init__(self, num_users, num_items, num_rates, model_args):
         super(Caser, self).__init__()
         self.args = model_args
 
@@ -38,6 +38,7 @@ class Caser(nn.Module):
         # user and item embeddings
         self.user_embeddings = nn.Embedding(num_users, dims)
         self.item_embeddings = nn.Embedding(num_items, dims)
+        self.rate_embeddings = nn.Embedding(num_rates, dims)
 
         # vertical conv layer
         self.conv_v = nn.Conv2d(1, self.n_v, (L, 1))
@@ -68,7 +69,7 @@ class Caser(nn.Module):
 
         self.cache_x = None
 
-    def forward(self, seq_var, user_var, item_var, use_cache=False, for_pred=False):
+    def forward(self, seq_var, user_var, rate_var, item_var, use_cache=False, for_pred=False):
         """
         The forward propagation used to get recommendation scores, given
         triplet (user, sequence, targets). Note that we can cache 'x' to
@@ -95,7 +96,9 @@ class Caser(nn.Module):
             # Embedding Look-up
             item_embs = self.item_embeddings(seq_var).unsqueeze(1)  # use unsqueeze() to get 4-D
             user_emb = self.user_embeddings(user_var).squeeze(1)
-
+            rate_emb = self.rate_embeddings(rate_var).squeeze(1)
+            print(rate_emb)
+            
             # Convolutional Layers
             out, out_h, out_v = None, None, None
             # vertical conv layer

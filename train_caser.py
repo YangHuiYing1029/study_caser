@@ -74,11 +74,13 @@ class Recommender(object):
     def _initialize(self, interactions):
         self._num_items = interactions.num_items
         self._num_users = interactions.num_users
+        self._num_rates = interactions.num_rates
 
         self.test_sequence = interactions.test_sequences
 
         self._net = gpu(Caser(self._num_users,
                               self._num_items,
+                              self._num_rates,
                               self.model_args), self._use_cuda)
         print(self._net)
 
@@ -105,7 +107,9 @@ class Recommender(object):
         # convert to sequences, targets and users
         sequences = train.sequences.sequences
         targets = train.sequences.targets
+        #print(type(train.sequences.user_ids), len(train.sequences.user_ids), type(train.sequences.rate_ids), len(train.sequences.rate_ids))
         users = train.sequences.user_ids.reshape(-1, 1)
+        rates = train.sequences.rate_ids.reshape(-1, 1)
 
         L, T = train.sequences.L, train.sequences.T
 
@@ -126,7 +130,7 @@ class Recommender(object):
             # set model to training model
             self._net.train()
 
-            users, sequences, targets = shuffle(users,
+            users, rates, sequences, targets = shuffle(users, rates,
                                                 sequences,
                                                 targets)
 
@@ -135,6 +139,8 @@ class Recommender(object):
             sequences_tensor = gpu(torch.from_numpy(sequences),
                                    self._use_cuda)
             user_tensor = gpu(torch.from_numpy(users),
+                              self._use_cuda)
+            rate_tensor = gpu(torch.from_numpy(rates),
                               self._use_cuda)
             item_target_tensor = gpu(torch.from_numpy(targets),
                                      self._use_cuda)
@@ -146,22 +152,27 @@ class Recommender(object):
             for minibatch_num, \
                 (batch_sequence,
                  batch_user,
+                 batch_rate,
                  batch_target,
                  batch_negative) in enumerate(minibatch(sequences_tensor,
                                                         user_tensor,
+                                                        rate_tensor,
                                                         item_target_tensor,
                                                         item_negative_tensor,
                                                         batch_size=self._batch_size)):
                 sequence_var = Variable(batch_sequence)
                 user_var = Variable(batch_user)
+                rate_var = Variable(batch_rate)
                 item_target_var = Variable(batch_target)
                 item_negative_var = Variable(batch_negative)
 
                 target_prediction = self._net(sequence_var,
                                               user_var,
+                                              rate_var,
                                               item_target_var)
                 negative_prediction = self._net(sequence_var,
                                                 user_var,
+                                                rate_var,
                                                 item_negative_var,
                                                 use_cache=True)
 
@@ -260,6 +271,8 @@ class Recommender(object):
 
         sequence = self.test_sequence.sequences[user_id, :]
         sequence = np.atleast_2d(sequence)
+        rate_ids = self.test_sequence.rate_ids[user_id, :]
+        print("predict", sequence, rate_ids)
 
         if item_ids is None:
             item_ids = np.arange(self._num_items).reshape(-1, 1)
@@ -267,13 +280,16 @@ class Recommender(object):
         sequences = torch.from_numpy(sequence.astype(np.int64).reshape(1, -1))
         item_ids = torch.from_numpy(item_ids.astype(np.int64))
         user_id = torch.from_numpy(np.array([[user_id]]).astype(np.int64))
-
+        rate_id = torch.from_numpy(np.array([[rate_id]]).astype(np.int64))
+        
         sequence_var = Variable(gpu(sequences, self._use_cuda))
         item_var = Variable(gpu(item_ids, self._use_cuda))
         user_var = Variable(gpu(user_id, self._use_cuda))
-
+        rate_var =  Variable(gpu(rate_id, self._use_cuda))
+        
         out = self._net(sequence_var,
                         user_var,
+                        rate_var,
                         item_var,
                         for_pred=True)
 
@@ -325,7 +341,8 @@ if __name__ == '__main__':
 
     test = Interactions(config.test_root,
                         user_map=train.user_map,
-                        item_map=train.item_map)
+                        item_map=train.item_map,
+                        rate_map=train.rate_map)
 
     print(config)
     #print(model_config)

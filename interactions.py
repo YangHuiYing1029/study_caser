@@ -23,23 +23,28 @@ class Interactions(object):
 
     def __init__(self, file_path,
                  user_map=None,
-                 item_map=None):
+                 item_map=None,
+                 rate_map=None):
 
-        if not user_map and not item_map:
+        if not user_map and not item_map and not rate_map:
             user_map = dict()
             item_map = dict()
+            rate_map = dict()
 
             num_user = 0
             num_item = 0
+            num_rate = 0
             
             user_ids = list()
             item_ids = list()
+            rate_ids = list()
             # read users and items from file
             with open(file_path, 'r') as fin:
                 for line in fin:
                     u, i, r = line.strip().split(',')
                     user_ids.append(u)
                     item_ids.append(i)
+                    rate_ids.append(r)
             #pdb.set_trace()
 
             # update user and item mapping
@@ -52,18 +57,23 @@ class Interactions(object):
                     item_map[i] = num_item
                     num_item += 1
 
-            user_ids = np.array([user_map[u] for u in user_ids])
-            item_ids = np.array([item_map[i] for i in item_ids])
-            #pdb.set_trace()
+            for r in rate_ids:
+                if r not in rate_map:
+                    rate_map[r] = num_rate
+                    num_rate += 1
 
         else:
             num_user = len(user_map)
             num_item = len(item_map)
+            num_rate = len(rate_map)
 
             user_ids = list()
             item_ids = list()
+            rate_ids = list()
+            
             user_keys = user_map.keys()
             item_keys = item_map.keys()
+            rate_keys = rate_map.keys()
             
             # read users and items from file
             with open(file_path, 'r') as fin:
@@ -72,24 +82,30 @@ class Interactions(object):
                     if u in user_keys and i in item_keys:
                         user_ids.append(u)
                         item_ids.append(i)
+                        rate_ids.append(r)
 
-            user_ids = np.array([user_map[u] for u in user_ids])
-            item_ids = np.array([item_map[i] for i in item_ids])
-            #pdb.set_trace()
+        user_ids = np.array([user_map[u] for u in user_ids])
+        item_ids = np.array([item_map[i] for i in item_ids])
+        rate_ids = np.array([rate_map[i] for i in rate_ids])
+        #pdb.set_trace()
 
         print("READ INPUT FILE ",file_path,"...")
         print("user_id ",min(user_ids),"~",max(user_ids)," [num: ",len(user_ids), " (unique: ", num_user,")]")
         print("item_id ",min(item_ids),"~",max(item_ids)," [num: ",len(item_ids), " (unique: ", num_item,")]")
+        print("rate_id ",min(rate_ids),"~",max(rate_ids)," [num: ",len(rate_ids), " (unique: ", num_rate,")]")
 
 
         self.num_users = num_user
         self.num_items = num_item
+        self.num_rates = num_rate
 
         self.user_ids = user_ids
         self.item_ids = item_ids
+        self.rate_ids = rate_ids
 
         self.user_map = user_map
         self.item_map = item_map
+        self.rate_map = rate_map
 
         self.sequences = None
         self.test_sequences = None
@@ -105,7 +121,9 @@ class Interactions(object):
 
         row = self.user_ids
         col = self.item_ids
+        #data = self.rate_ids
         data = np.ones(len(self))
+        
         #print("shape", self.num_users+1, self.num_items+1)
         #print(max(row), max(col))
         return sp.coo_matrix((data, (row, col)),
@@ -170,6 +188,7 @@ class Interactions(object):
 
         user_ids = self.user_ids[sort_indices]
         item_ids = self.item_ids[sort_indices]
+        rate_ids = self.rate_ids[sort_indices]
 
         user_ids, indices, counts = np.unique(user_ids,
                                               return_index=True,
@@ -189,15 +208,20 @@ class Interactions(object):
                                      dtype=np.int64)
         sequence_users = np.empty(num_subsequences,
                                   dtype=np.int64)
+        sequence_rates = np.empty(num_subsequences,
+                                  dtype=np.int64)
 
         test_sequences = np.zeros((self.num_users, sequence_length),
                                   dtype=np.int64)
         test_users = np.empty(self.num_users,
                               dtype=np.int64)
+        test_rates = np.empty(self.num_users,
+                              dtype=np.int64)
         _uid = None
-        for i, (uid,
+        for i, (uid, rid,
                 item_seq) in enumerate(_generate_sequences(user_ids,
                                                            item_ids,
+                                                           rate_ids,
                                                            indices,
                                                            max_sequence_length)):
 
@@ -205,17 +229,20 @@ class Interactions(object):
                 _uid = uid
                 test_sequences[uid][:] = item_seq[-sequence_length:]
                 test_users[uid] = uid
+                test_rates[uid] = rid
 
             sequences_targets[i][:] = item_seq[-target_length:]
             sequences[i][:] = item_seq[:sequence_length]
             sequence_users[i] = uid
+            sequence_rates[i] = rid
         # print("i", i)
         # print("num_subsequences", num_subsequences)
         # print("item이 충분한 유저 갯수", len(np.unique(sequence_users)))
         # print("max uid", max(sequence_users))
         # print(self.num_users)
-        self.sequences = SequenceInteractions(sequence_users, sequences, sequences_targets)
-        self.test_sequences = SequenceInteractions(test_users, test_sequences)
+        #print("before SeqInteractions", type(sequence_rates), len(sequence_rates))
+        self.sequences = SequenceInteractions(sequence_users, sequences, sequence_rates, sequences_targets)
+        self.test_sequences = SequenceInteractions(test_users, test_sequences, test_rates)
 
 
 class SequenceInteractions(object):
@@ -236,11 +263,14 @@ class SequenceInteractions(object):
     def __init__(self,
                  user_ids,
                  sequences,
+                 rate_ids,
                  targets=None):
+        #print("in SequenceInteractions", type(user_ids), len(user_ids), type(rate_ids), len(rate_ids))
         self.user_ids = user_ids
+        self.rate_ids = rate_ids
         self.sequences = sequences
         self.targets = targets
-
+        #print(type(self.user_ids), len(self.user_ids), type(rate_ids), len(rate_ids), type(self.rate_ids), len(self.rate_ids))
         self.L = sequences.shape[1]
         self.T = None
         if np.any(targets):
@@ -260,7 +290,7 @@ def _sliding_window(tensor, window_size, step_size=1):
     #     # yield tensor #### 여기서 그냥 반환하면 위에서 접근할 때 길이가 안맞아서 오류가 나지 않나?
 
 
-def _generate_sequences(user_ids, item_ids,
+def _generate_sequences(user_ids, item_ids, rate_ids,
                         indices,
                         max_sequence_length):
     # sum = 0
@@ -276,4 +306,4 @@ def _generate_sequences(user_ids, item_ids,
             # print(sum)
             # print("yes" , user_ids[i])
             for seq in _sliding_window(items,max_sequence_length):
-                yield (user_ids[i], seq)
+                yield (user_ids[i], rate_ids[i], seq)

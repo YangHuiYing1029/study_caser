@@ -29,7 +29,7 @@ def _compute_precision_recall(targets, predictions, k):
     return precision, recall
 
 
-def evaluate_ranking(model, test, train=None, k=10):
+def evaluate_ranking(model, test_in, train=None, k=10):
     """
     Compute Precision@k, Recall@k scores and average precision (AP).
     One score is given for every user with interactions in the test
@@ -50,7 +50,7 @@ def evaluate_ranking(model, test, train=None, k=10):
         The maximum number of predicted items
     """
 
-    test = test.tocsr()
+    test = test_in.tocsr()
 
     if train is not None:
         train = train.tocsr()
@@ -68,7 +68,7 @@ def evaluate_ranking(model, test, train=None, k=10):
 
         if not len(row.indices):
             continue
-
+            
         predictions = -model.predict(user_id)
         predictions = predictions.argsort()
 
