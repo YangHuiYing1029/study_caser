@@ -1,0 +1,11 @@
+READ INPUT FILE  datasets/ml1m/test/train.txt ...
+user_id  0 ~ 6039  [num:  802085  (unique:  6040 )]
+item_id  0 ~ 3414  [num:  802085  (unique:  3415 )]
+SET ITEM PADDING...
+user_id  0 ~ 6039  [num:  802085  (unique:  6040 )]
+item_id  1 ~ 3415  [num:  802085  (unique:  3416 )]
+READ INPUT FILE  datasets/ml1m/test/test.txt ...
+user_id  0 ~ 6039  [num:  197521  (unique:  6040 )]
+item_id  1 ~ 3415  [num:  197521  (unique:  3415 )]
+Namespace(L=5, T=3, ac_conv='relu', ac_fc='relu', batch_size=512, d=50, drop=0.5, l2=1e-06, learning_rate=0.001, n_iter=1, neg_samples=3, nh=16, nv=4, seed=1234, test_root='datasets/ml1m/test/test.txt', train_root='datasets/ml1m/test/train.txt', use_cuda=True)
+total training instances: 759805

@@ -1,0 +1,30 @@
+READ INPUT FILE  datasets/ml1m/test/train.txt ...
+user_id  0 ~ 6039  [num:  802085  (unique:  6040 )]
+item_id  0 ~ 3414  [num:  802085  (unique:  3415 )]
+SET ITEM PADDING...
+user_id  0 ~ 6039  [num:  802085  (unique:  6040 )]
+item_id  1 ~ 3415  [num:  802085  (unique:  3416 )]
+READ INPUT FILE  datasets/ml1m/test/test.txt ...
+user_id  0 ~ 6039  [num:  197521  (unique:  6040 )]
+item_id  1 ~ 3415  [num:  197521  (unique:  3415 )]
+Namespace(L=5, T=3, ac_conv='relu', ac_fc='relu', batch_size=512, d=50, drop=0.5, l2=1e-06, learning_rate=0.001, n_iter=1, neg_samples=3, nh=0, nv=0, seed=1234, test_root='datasets/ml1m/test/test.txt', train_root='datasets/ml1m/test/train.txt', use_cuda=True)
+total training instances: 759805
+[50, 8, 6, 3, 45, 7, 16, 2] [4, 1, 5, 6, 1, 3, 1, 1]
+Caser(
+  (user_embeddings): Embedding(6040, 50)
+  (item_embeddings): Embedding(3416, 50)
+  (convList): ModuleList(
+    (0): Conv2d(1, 4, kernel_size=(4, 50), stride=(1, 1))
+    (1): Conv2d(1, 4, kernel_size=(1, 8), stride=(1, 1))
+    (2): Conv2d(1, 4, kernel_size=(5, 6), stride=(1, 1))
+    (3): Conv2d(1, 4, kernel_size=(6, 3), stride=(1, 1))
+    (4): Conv2d(1, 4, kernel_size=(1, 45), stride=(1, 1))
+    (5): Conv2d(1, 4, kernel_size=(3, 7), stride=(1, 1))
+    (6): Conv2d(1, 4, kernel_size=(1, 16), stride=(1, 1))
+    (7): Conv2d(1, 4, kernel_size=(1, 2), stride=(1, 1))
+  )
+  (fc1): Linear(in_features=32, out_features=50, bias=True)
+  (W2): Embedding(3416, 100)
+  (b2): Embedding(3416, 1)
+  (dropout): Dropout(p=0.5)
+)

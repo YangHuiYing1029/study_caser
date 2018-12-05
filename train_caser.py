@@ -5,7 +5,7 @@ import sys
 
 import torch.optim as optim
 from torch.autograd import Variable
-
+from random import randint
 from caser import Caser
 from evaluation import evaluate_ranking
 from interactions import Interactions
@@ -196,6 +196,8 @@ class Recommender(object):
                                                                                          np.mean(recall[2]),
                                                                                          time() - t2)
                 print(output_str)
+                print(output_str, orig_stdout)
+
             else:
                 output_str = "Epoch %d [%.1f s]\tloss=%.4f [%.1f s]" % (epoch_num + 1,
                                                                         t2 - t1,
@@ -343,6 +345,7 @@ if __name__ == '__main__':
 
     model.fit(train, test, verbose=True)
     
-    print('--------------end--------------\n\n')
+    print('--------------end--------------\n\n', f)
+    print('--------------end--------------\n\n', orig_stdout)
     sys.stdout = orig_stdout
     f.close()

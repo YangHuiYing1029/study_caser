@@ -1,8 +1,10 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import random
 import pdb
 from utils import activation_getter
+from random import randint
 
 
 class Caser(nn.Module):
@@ -34,7 +36,7 @@ class Caser(nn.Module):
         self.drop_ratio = self.args.drop
         self.ac_conv = activation_getter[self.args.ac_conv]
         self.ac_fc = activation_getter[self.args.ac_fc]
-
+        fc1_dim_in=0
         # user and item embeddings
         self.user_embeddings = nn.Embedding(num_users, dims)
         self.item_embeddings = nn.Embedding(num_items, dims)
@@ -42,17 +44,30 @@ class Caser(nn.Module):
         # vertical conv layer
         if self.n_v != 0:
             self.conv_v = nn.Conv2d(1, self.n_v, (L, 1))
-        # self.conv_v = nn.Conv2d(1, self.n_v, (dims, 1))
+#         self.conv_v = nn.Conv2d(1, self.n_v, (dims, 1))
 
         # horizontal conv layer
-        lengths = [i + 1 for i in range(L)]
+#         lengths = [i + 1 for i in range(L)]
+        lengths = [L]
         if self.n_h != 0:
             self.conv_h = nn.ModuleList([nn.Conv2d(1, self.n_h, (i, dims)) for i in lengths])
-
+        
+        if self.n_v == 0 and self.n_h == 0:
+            num_filter = 8
+            dim_filter = 4
+            filter_w = list()
+            filter_h = list()
+            for i in range(num_filter):
+                filter_w.append(randint(1, dims))
+                filter_h.append(randint(1, L))
+            print(filter_w, filter_h)
+            self.conv = nn.ModuleList([nn.Conv2d(1, dim_filter, (filter_h[i], filter_w[i])) for i in range(num_filter)])
+            fc1_dim_in = num_filter * dim_filter
+        
         # fully-connected layer
         self.fc1_dim_v = self.n_v * dims
         self.fc1_dim_h = self.n_h * len(lengths)
-        fc1_dim_in = self.fc1_dim_v + self.fc1_dim_h
+        fc1_dim_in = self.fc1_dim_v + self.fc1_dim_h + fc1_dim_in
         # W1, b1 can be encoded with nn.Linear
         self.fc1 = nn.Linear(fc1_dim_in, dims)
         # W2, b2 are encoded with nn.Embedding, as we don't need to compute scores for all items
@@ -100,6 +115,7 @@ class Caser(nn.Module):
 
             # Convolutional Layers
             out, out_h, out_v = None, None, None
+            
             # vertical conv layer
             if self.n_v !=0:
                 # print("n_v", self.n_v)
@@ -117,14 +133,29 @@ class Caser(nn.Module):
                     out_hs.append(pool_out)
                 out_h = torch.cat(out_hs, 1)  # prepare for fully connect
 
-            # pdb.set_trace()
+            # INTEGRATE FILTER
+            out_i = list()
+            if self.n_v == 0 and self.n_h == 0:
+                for conv in self.conv:
+                    conv_out = self.ac_conv(conv(item_embs).squeeze(3))
+                    print(conv_out.size())
+                    pool_out = F.max_pool2d((conv_out.size(1),conv_out.size(2)), kernel_size=(conv_out.size(1),conv_out.size(2)))
+                    print(pool_out.size())
+                    pool_out = pool_out.squeeze(2)                    
+                    out_i.append(pool_out)
+                out_h = torch.cat(out_i, 1)  # prepare for fully connect
+#                 out = out_h
+
             # Fully-connected Layers
-            if self.n_h == 0:
+            if self.n_h == 0 and self.n_v == 0:
+                out = out_h
+            elif self.n_h == 0:
                 out = out_v
             elif self.n_v == 0:
                 out = out_h
             else:
                 out = torch.cat([out_v, out_h], 1)
+            
             # apply dropout
             out = self.dropout(out)
             # pdb.set_trace()
