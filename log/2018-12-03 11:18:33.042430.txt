@@ -1,0 +1,6 @@
+READ INPUT FILE  datasets/ml1m/test/train.txt ...
+user_id  0 ~ 6039  [num:  802085  (unique:  6040 )]
+item_id  0 ~ 3414  [num:  802085  (unique:  3415 )]
+SET ITEM PADDING...
+user_id  0 ~ 6039  [num:  802085  (unique:  6040 )]
+item_id  1 ~ 3415  [num:  802085  (unique:  3416 )]

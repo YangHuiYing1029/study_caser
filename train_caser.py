@@ -1,5 +1,6 @@
 import argparse
 from time import time
+import datetime
 import sys
 
 import torch.optim as optim
@@ -283,7 +284,9 @@ class Recommender(object):
 if __name__ == '__main__':
     # write at file
     orig_stdout = sys.stdout
-    f = open('log/out.txt', 'w')
+    filename = str(datetime.datetime.now())
+    f = open('log/'+filename+'.txt', 'w')
+    print("open"+filename+".txt", orig_stdout)
     sys.stdout = f
     
     parser = argparse.ArgumentParser()
@@ -304,7 +307,7 @@ if __name__ == '__main__':
 
     # config = parser.parse_args()
     # model dependent arguments
-    parser.add_argument('--d', type=int, default=100)
+    parser.add_argument('--d', type=int, default=50)
     parser.add_argument('--nv', type=int, default=4)
     parser.add_argument('--nh', type=int, default=16)
     parser.add_argument('--drop', type=float, default=0.5)
